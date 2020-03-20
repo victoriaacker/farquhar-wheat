@@ -49,18 +49,18 @@ With Nose::
     
 Without Nose, install the package (see section "Installing") and run::
 
-    python test/unit/test_farquharwheat.py
+    python test/test_farquharwheat.py
 
 
 Contact
 =======
 
-Please send a mail to farquhar-wheat@groupes.renater.fr.
+TODO # Please send a mail to farquhar-wheat@groupes.renater.fr.
 
 
 Contributing
 ============
-
+TODO
 #. Check for open issues or open a fresh issue to start a discussion around a
    feature idea or a bug: https://sourcesup.renater.fr/tracker/?group_id=1622.
 #. If you feel uncomfortable or uncertain about an issue or your changes, feel

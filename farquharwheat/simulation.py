@@ -68,12 +68,11 @@ class Simulation(object):
         self.inputs.clear()
         self.inputs.update(inputs)
 
-    def run(self, PARi,  Ta, ambient_CO2, RH, Ur):
+    def run(self, Ta, ambient_CO2, RH, Ur):
         """
         Compute Farquhar variables for each element in :attr:`inputs` and put
         the results in :attr:`outputs`.
 
-        :param float PARi: The incident PAR above the canopy (µmol m-2 s-1)
         :param float Ta: air temperature at t (degree Celsius)
         :param float ambient_CO2: air CO2 at t (µmol mol-1)
         :param float RH: relative humidity at t (decimal fraction)
@@ -92,14 +91,11 @@ class Simulation(object):
                 continue
             # In case it is an HiddenElement, we need temperature calculation. Cases of Visible Element without geomtry proprety (because too small) don't have photosynthesis calculation neither.
             if element_inputs['height'] is None:
-                PARa, Ag, An, Rd, Tr, gs = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+                Ag, An, Rd, Tr, gs = 0.0, 0.0, 0.0, 0.0, 0.0
                 Ts = self.inputs['SAMs'][SAM_id]['SAM_temperature']
-                Tr = 0.1  # Default transpiration value for small organs under ADEL's resolution (green_area == 0)
+                # Tr = 0.1  # Default transpiration value for small organs under ADEL's resolution (green_area == 0)
             else:
-                Eabs = element_inputs['Eabs']  #: Eabs is the relative surfacic absorbed energy per organ
-                if Eabs is None:
-                    Eabs = 0.
-                PARa = PARi * Eabs  #: Amount of absorbed PAR per unit area (µmol m-2 s-1)
+                PARa = element_inputs['PARa']  #: Amount of absorbed PAR per unit area (µmol m-2 s-1)
 
                 surfacic_nitrogen = model.Model.calculate_surfacic_nitrogen(element_inputs['nitrates'],
                                                                             element_inputs['amino_acids'],
@@ -113,6 +109,6 @@ class Simulation(object):
                                                          element_inputs['height'],
                                                          PARa, Ta, ambient_CO2, RH, Ur, organ_label, height_canopy)
 
-            element_outputs = {'PARa': PARa, 'Ag': Ag, 'An': An, 'Rd': Rd, 'Tr': Tr, 'Ts': Ts, 'gs': gs, 'width': element_inputs['width'], 'height': element_inputs['height']}
+            element_outputs = {'Ag': Ag, 'An': An, 'Rd': Rd, 'Tr': Tr, 'Ts': Ts, 'gs': gs, 'width': element_inputs['width'], 'height': element_inputs['height']}
 
             self.outputs[element_id] = element_outputs

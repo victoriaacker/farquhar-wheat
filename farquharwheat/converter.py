@@ -1,6 +1,7 @@
 # -*- coding: latin-1 -*-
 
 from __future__ import division  # use "//" to do integer division
+
 import pandas as pd
 
 """
@@ -13,15 +14,6 @@ import pandas as pd
     :copyright: Copyright 2014-2016 INRA-ECOSYS, see AUTHORS.
     :license: see LICENSE for details.
 
-"""
-
-"""
-    Information about this versioned file:
-        $LastChangedBy$
-        $LastChangedDate$
-        $LastChangedRevision$
-        $URL$
-        $Id$
 """
 
 #: the inputs needed by FarquharWheat at element scale

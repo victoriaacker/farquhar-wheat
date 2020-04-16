@@ -16,16 +16,6 @@ from math import sqrt, log,  exp
 
 """
 
-"""
-    Information about this versioned file:
-        $LastChangedBy$
-        $LastChangedDate$
-        $LastChangedRevision$
-        $URL$
-        $Id$
-"""
-
-
 class Model(object):
 
     O = 21000       #: Photosynthetic parameter: Intercellular O2 concentration, µmol mol(air)-1 or Pa, from Bernacchi et al. (2001)

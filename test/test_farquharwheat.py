@@ -21,15 +21,6 @@ from farquharwheat import simulation, converter
 
 """
 
-"""
-    Information about this versioned file:
-        $LastChangedBy$
-        $LastChangedDate$
-        $LastChangedRevision$
-        $URL$
-        $Id$
-"""
-
 # the file names of the inputs
 INPUTS_ELEMENT_FILENAME = 'elements_inputs.csv'
 INPUTS_SAM_FILENAME = 'SAMs_inputs.csv'

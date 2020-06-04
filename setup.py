@@ -31,9 +31,6 @@ if sys.version_info < (2, 7):
     print('ERROR: Farquhar-Wheat requires at least Python 2.7 to run.')
     sys.exit(1)
 
-if sys.version_info >= (3, 0):
-    print('WARNING: Farquhar-Wheat has not been tested with Python 3.')
-
 setup(
     name="Farquhar-Wheat",
     version=farquharwheat.__version__,

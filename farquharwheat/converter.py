@@ -17,12 +17,12 @@ import pandas as pd
 
 #: the inputs needed by FarquharWheat at element scale
 FARQUHARWHEAT_ELEMENTS_INPUTS = ['width', 'height', 'PARa', 'nitrates', 'amino_acids', 'proteins', 'Nstruct', 'green_area',
-                                 'sucrose', 'starch', 'fructan', 'PARa_prim', 'area_prim']
+                                 'sucrose', 'starch', 'fructan', 'PARa_prim', 'area_prim', 'ambient_CO2', 'total_water_potential']
 #: the inputs needed by FarquharWheat at axis scale
-FARQUHARWHEAT_AXES_INPUTS = ['SAM_temperature', 'height_canopy']
+FARQUHARWHEAT_AXES_INPUTS = ['SAM_temperature', 'height_canopy', 'SRWC']
 
 #: the outputs computed by FarquharWheat
-FARQUHARWHEAT_ELEMENTS_OUTPUTS = ['Ag', 'An', 'Rd', 'Tr', 'Ts', 'gs', 'width', 'height']
+FARQUHARWHEAT_ELEMENTS_OUTPUTS = ['Ag', 'An', 'Rd', 'Tr', 'VPDa', 'Ts', 'gs', 'width', 'height', 'ambient_CO2', 'PARa', 'gs_VPD', 'gs_psi', 'gs_VPD_psi', 'total_water_potential']
 
 #: the inputs and outputs of FarquharWheat.
 FARQUHARWHEAT_ELEMENTS_INPUTS_OUTPUTS = set(FARQUHARWHEAT_ELEMENTS_INPUTS + FARQUHARWHEAT_ELEMENTS_OUTPUTS)
@@ -31,6 +31,9 @@ FARQUHARWHEAT_ELEMENTS_INPUTS_OUTPUTS = set(FARQUHARWHEAT_ELEMENTS_INPUTS + FARQ
 ELEMENT_TOPOLOGY_COLUMNS = ['plant', 'axis', 'metamer', 'organ', 'element']
 #: the columns which define the topology in the input/output elements dataframe
 AXIS_TOPOLOGY_COLUMNS = ['plant', 'axis']
+
+#: time index
+T_INDEX = ['t']
 
 
 def from_dataframe(element_inputs, axes_inputs):
@@ -61,7 +64,6 @@ def from_dataframe(element_inputs, axes_inputs):
         all_axes_dict[current_id] = current_dict
 
     return {'elements': all_elements_dict, 'axes': all_axes_dict}
-
 
 def to_dataframe(data_dict):
     """

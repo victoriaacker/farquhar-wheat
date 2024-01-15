@@ -1,2 +1,2 @@
-plant,axis,SAM_temperature,height_canopy
-1,MS,20,0.7
+plant;axis;SAM_temperature;height_canopy;SRWC;ambient_CO2
+1;MS;20;0.7;80;400

@@ -16,7 +16,6 @@ from farquharwheat import parameters
 
 """
 
-
 class SimulationError(Exception):
     pass
 
@@ -66,7 +65,8 @@ class Simulation(object):
         self.inputs.clear()
         self.inputs.update(inputs)
 
-    def run(self, Ta, ambient_CO2, RH, Ur):
+
+    def run(self, Ta, ambient_CO2, RH, Ur, SRWC):
         """
         Compute Farquhar variables for each element in :attr:`inputs` and put
         the results in :attr:`outputs`.
@@ -80,16 +80,20 @@ class Simulation(object):
         self.outputs.update({inputs_type: {} for inputs_type in self.inputs['elements'].keys()})
 
         for (element_id, element_inputs) in self.inputs['elements'].items():
-
             axis_id = element_id[:2]
             organ_label = element_id[3]
 
             axe_label = axis_id[1]
+
+            # total_water_potential = -0.1
+            total_water_potential = self.inputs['elements'][element_id]['total_water_potential']
+            SRWC = self.inputs['axes'][axis_id]['SRWC']
+
             if axe_label != 'MS':  # Calculation only for the main stem
                 continue
             # In case it is an HiddenElement, we need temperature calculation. Cases of Visible Element without geomtry proprety (because too small) don't have photosynthesis calculation neither.
             if element_inputs['height'] is None:
-                Ag, An, Rd, Tr, gs = 0., 0., 0., 0., 0.
+                Ag, An, Rd, Tr, VPDa, gsw, gs_VPD, gs_psi, gs_VPD_psi = 0., 0., 0., 0., 0., 0., 0., 0., 0.
                 Ts = self.inputs['axes'][axis_id]['SAM_temperature']
             else:
                 PARa = element_inputs['PARa']  #: Amount of absorbed PAR per unit area (µmol m-2 s-1)
@@ -112,25 +116,25 @@ class Simulation(object):
 
                 if not parameters.prim_scale:
                     #:  Computation at organ scale
-                    Ag, An, Rd, Tr, Ts, gs = model.run(surfacic_nitrogen,
+                    Ag, An, Rd, Tr, VPDa, Ts, gsw, gs_VPD, gs_psi, gs_VPD_psi = model.run(surfacic_nitrogen,
                                                        parameters.NSC_Retroinhibition,
                                                        surfacic_NSC,
                                                        element_inputs['width'],
                                                        element_inputs['height'],
                                                        PARa, Ta, ambient_CO2,
-                                                       RH, Ur, organ_label, height_canopy)
+                                                       RH, Ur, organ_label, height_canopy, total_water_potential, SRWC)
 
                 else:
                     #:  Computation at primitive scale
                     Ag_prim_list = []
                     for PARa_prim in element_inputs['PARa_prim']:  #: Amount of absorbed PAR per unit area (µmol m-2 s-1)
-                        Ag_prim, An, Rd, Tr, Ts, gs = model.run(surfacic_nitrogen,
+                        Ag_prim, An, Rd, Tr, VPDa, Ts, gsw, gs_VPD, gs_psi, gs_VPD_psi = model.run(surfacic_nitrogen,
                                                                 parameters.NSC_Retroinhibition,
                                                                 surfacic_NSC,
                                                                 element_inputs['width'],
                                                                 element_inputs['height'],
                                                                 PARa_prim, Ta, ambient_CO2,
-                                                                RH, Ur, organ_label, height_canopy)
+                                                                RH, Ur, organ_label, height_canopy, total_water_potential, SRWC)
                         Ag_prim_list.append(Ag_prim)
                     if not Ag_prim_list:
                         Ag = 0
@@ -138,7 +142,7 @@ class Simulation(object):
                         Ag = sum([Ag_prim * area_prim for Ag_prim, area_prim in zip(Ag_prim_list, element_inputs['area_prim'])]) / sum(element_inputs['area_prim'])
 
             element_outputs = {'Ag': Ag, 'An': An, 'Rd': Rd,
-                               'Tr': Tr, 'Ts': Ts, 'gs': gs,
-                               'width': element_inputs['width'], 'height': element_inputs['height']}
+                               'Tr': Tr, 'Ts': Ts, 'gs': gsw, 'gs_VPD': gs_VPD, 'gs_psi': gs_psi, 'gs_VPD_psi': gs_VPD_psi, 'VPDa': VPDa,
+                               'width': element_inputs['width'], 'height': element_inputs['height'], 'total_water_potential': total_water_potential}
 
             self.outputs[element_id] = element_outputs

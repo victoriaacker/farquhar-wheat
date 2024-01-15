@@ -1,7 +1,7 @@
 # -*- coding: latin-1 -*-
 
 """
-    farquharwheat.paramters
+    farquharwheat.parameters
     ~~~~~~~~~~~~~~~~~~~
 
     The module :mod:`farquharwheat.parameters` defines the constant parameters.
@@ -109,11 +109,26 @@ Rd_C = 15  # parameter C in the calculation of the Rd
 Ci_init_ratio = 0.7
 
 # -- Stomatal conductance parameter
-GSMIN = 0.05  # Minimum gsw, measured in the dark (mol m-2 s-1). Braune et al. (2009).
 GB = 3.5  # Boundary layer conductance to water vapour (mol m-2 s-1). Muller et al., (2005)
 K_Cs = 1.37  # factor in CO2 concentration at organ surface. From Prieto et al. (2012).
 gsw_gs_CO2 = 1.6  # conversion factor from gsw into gs_CO2
 Ci_A = 1.37  # factor in Ci calculation. Comes from (1.6)^(2/3)
+
+GSMIN = 0.05  # Minimum gsw, measured in the dark (mol m-2 s-1). Braune et al. (2009).
+# GSMIN = 0.02 # Residual conductance for CO2 (mol m-2 s-1) (limiting value of gCO2 at the light compensation point) Alabasha et al. (2019)
+# GSMIN = 0.3E-3 # Residual conductance for CO2 (mol m-2 s-1) (limiting value of gCO2 at the light compensation point). Tuzet et al. (2003)
+
+GAMMA0 = 28E-6 # Empirical parameter (mol mol-1). Tuzet et al. (2003).
+GAMMA1 = 0.0509 # Empirical parameter (-). Tuzet et al. (2003).
+GAMMA2 = 0.0010 # Empirical parameter (-). Tuzet et al. (2003).
+T_ref = 293.2 # Reference temperature (K). Tuzet et al. (2003).
+
+m = 5.7 # Shape parameter (-). Alabasha et al. (2019)
+# m = 2 # Shape parameter (-). Tuzet et al. (2003)
+water_potential_ref = -0.65 # Leaf water potential at which gs_CO2 is reduced by 50% og its unstressed level (Mpa) Alabasha et al. (2019)
+# water_potential_ref = -1.5 # Leaf water potential at which gs_CO2 is reduced by 50% og its unstressed level (Mpa). Jarvis (1976). Tuzet et al. (2003)
+D0 = 30 # Scaling parameter (kPa). Value 1 or 30. Alabasha et al. (2019)
+n = 4 # Shape parameter (-). Alabasha et al. (2019)
 
 # -- Temperature dependance of photosynthetic parameters (parameter values derived from Braune et al. (2009) except for Kc, Ko, and Rdark (Bernacchi et al., 2001))
 #     * deltaHa, deltaHd: enthalpie of activation and deactivation respectively (kJ mol-1)
@@ -147,6 +162,7 @@ class ElementDefaultProperties(object):
         self.fructan = 0
         self.starch = 0
         self.green_area = 0
+        self.total_water_potential = -0.1
 
 
 class AxisDefaultProperties(object):

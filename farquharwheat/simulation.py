@@ -141,8 +141,8 @@ class Simulation(object):
                     else:
                         Ag = sum([Ag_prim * area_prim for Ag_prim, area_prim in zip(Ag_prim_list, element_inputs['area_prim'])]) / sum(element_inputs['area_prim'])
 
-            element_outputs = {'Ag': Ag, 'An': An, 'Rd': Rd,
-                               'Tr': Tr, 'Ts': Ts, 'gs': gsw, 'gs_VPD': gs_VPD, 'gs_psi': gs_psi, 'gs_VPD_psi': gs_VPD_psi, 'VPDa': VPDa,
-                               'width': element_inputs['width'], 'height': element_inputs['height'], 'total_water_potential': total_water_potential}
+            element_outputs = {'Ag': Ag, 'An': An, 'Rd': Rd, 'Tr': Tr, 'Ts': Ts,
+                               'gs': gsw, 'gs_VPD': gs_VPD, 'gs_psi': gs_psi, 'gs_VPD_psi': gs_VPD_psi, 'VPDa': VPDa,
+                               'width': element_inputs['width'], 'height': element_inputs['height'], 'total_water_potential': element_inputs['total_water_potential']}
 
             self.outputs[element_id] = element_outputs

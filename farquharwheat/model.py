@@ -20,7 +20,7 @@ from farquharwheat import parameters
 
 # TODO: extract all parameters and put them in farqhuar.parameters
 
-def _organ_temperature(w, z, Zh, Ur, PAR, gsw, Ta, Ts, RH, organ_name, SRWC):
+def _organ_temperature(w, z, Zh, Ur, PAR, gsw, gs_VPD, gs_psi, gs_VPD_psi, Ta, Ts, RH, organ_name, SRWC):
     """
     Energy balance for the estimation of organ temperature
 
@@ -84,11 +84,13 @@ def _organ_temperature(w, z, Zh, Ur, PAR, gsw, Ta, Ts, RH, organ_name, SRWC):
 
     VPDa = es_Ta - V
     rbw = parameters.rbh_rbw * rbh  #: Boundary layer resistance for water (s m-1)
-    gsw_physic = (gsw * parameters.R * (Ts + parameters.KELVIN_DEGREE)) / parameters.PATM  #: Stomatal conductance to water in physical units (m s-1). Relation given by A. Tuzet (2003)
+    # gsw_physic = (gsw * parameters.R * (Ts + parameters.KELVIN_DEGREE)) / parameters.PATM  #: Stomatal conductance to water in physical units (m s-1). Relation given by A. Tuzet (2003)
+
+    # Integration of gsw calculated from coupling Tuzet and Leuning models
+    gsw_physic = (gs_VPD_psi * parameters.R * (Ts + parameters.KELVIN_DEGREE)) / parameters.PATM  #: Stomatal conductance to water in physical units (m s-1). Relation given by A. Tuzet (2003)
+
     rswp = 1 / gsw_physic  #: Stomatal resistance for water (s m-1)
     Tr = max(0., (s * Rn + (parameters.RHOCP * VPDa) / (rbh + ra)) / (parameters.LAMBDA * (s + parameters.GAMMA * ((rbw + ra + rswp) / (rbh + ra)))))  #: mm s-1
-
-    # TO DO : Tr = f(SRWC). Echelle Tr cumulée
 
     #: Organ temperature
     Ts = Ta + ((rbh + ra) * (Rn - parameters.LAMBDA * Tr)) / parameters.RHOCP
@@ -160,9 +162,34 @@ def _stomatal_conductance_Tuzet(total_water_potential, An, Ag, Ta, ambient_CO2):
 
     return gs_psi
 
-def _stomatal_conductance_Wolf(total_water_potential, An, Ag, Ta, ambient_CO2, RH):
+# def _stomatal_conductance_Wolf(total_water_potential, An, Ag, Ta, ambient_CO2, RH):
+#     """
+#     Wolf model of stomatal conductance to CO2 (2016)
+#
+#     :param total_water_potential: water potential of the organ (Mpa)
+#     :param float Ag: gross assimilation rate (µmol m-2 s-1)
+#     :param float An: net assimilation rate (µmol m-2 s-1)
+#     :param float ambient_CO2: Air CO2 (µmol mol-1)
+#
+#     :return: gs_VPD_psi (mol m-2 s-1)
+#     :rtype: float
+#     """
+#
+#     es_Ta = parameters.s_C * exp((parameters.s_B * Ta) / (parameters.s_A + Ta))  #: Saturated vapour pressure of the air (kPa), Ta in degree Celsius
+#     V = RH * es_Ta  #: Vapour pressure of the air (kPa)
+#     VPDa = es_Ta - V
+#
+#     fw = (1 / (1 + VPDa / parameters.D0)) * (1 / (1 + (total_water_potential / parameters.water_potential_ref) ** parameters.n))
+#
+#     Cs = ambient_CO2 - An * (parameters.K_Cs / parameters.GB)  #: CO2 concentration at organ surface (µmol mol-1 or Pa). From Prieto et al. (2012). GB in mol m-2 s-1
+#     gamma = parameters.GAMMA0 * (1 + parameters.GAMMA1 * (Ta - parameters.T_ref) + parameters.GAMMA2 * ((Ta - parameters.T_ref) * (Ta - parameters.T_ref)))
+#     gs_VPD_psi = parameters.GSMIN + (1.6 * parameters.m * Ag * fw) / (Cs - gamma)
+#
+#     return gs_VPD_psi
+
+def _stomatal_conductance_coupling(total_water_potential, An, Ag, Ta, ambient_CO2, RH):
     """
-    Wolf model of stomatal conductance to CO2 (2016)
+    Model of stomatal conductance to CO2 coupling Tuzet and Leuning
 
     :param total_water_potential: water potential of the organ (Mpa)
     :param float Ag: gross assimilation rate (µmol m-2 s-1)
@@ -173,20 +200,21 @@ def _stomatal_conductance_Wolf(total_water_potential, An, Ag, Ta, ambient_CO2, R
     :rtype: float
     """
 
+    fpsi = 1 / (1 + (total_water_potential / parameters.water_potential_ref) ** parameters.n)
     es_Ta = parameters.s_C * exp((parameters.s_B * Ta) / (parameters.s_A + Ta))  #: Saturated vapour pressure of the air (kPa), Ta in degree Celsius
     V = RH * es_Ta  #: Vapour pressure of the air (kPa)
     VPDa = es_Ta - V
-
-    fw = 1 / (1 + VPDa/parameters.D0) * 1/ (1 + (total_water_potential/parameters.water_potential_ref)**parameters.n)
+    fvpd = 1 / (1 + VPDa / parameters.D0)
 
     Cs = ambient_CO2 - An * (parameters.K_Cs / parameters.GB)  #: CO2 concentration at organ surface (µmol mol-1 or Pa). From Prieto et al. (2012). GB in mol m-2 s-1
     gamma = parameters.GAMMA0 * (1 + parameters.GAMMA1 * (Ta - parameters.T_ref) + parameters.GAMMA2 * ((Ta - parameters.T_ref) * (Ta - parameters.T_ref)))
-    gs_VPD_psi = parameters.GSMIN + (1.6 * parameters.m * Ag * fw)/(Cs - gamma)
+
+    gs_VPD_psi = parameters.GSMIN + (1.6 * parameters.m * Ag * fvpd * fpsi)/(Cs - gamma)
 
     return gs_VPD_psi
 
 
-def _calculate_Ci(ambient_CO2, An, gsw):
+def _calculate_Ci(ambient_CO2, An, gsw, gs_VPD, gs_psi, gs_VPD_psi):
     """
     Calculates the internal CO2 concentration (Ci)
 
@@ -197,8 +225,13 @@ def _calculate_Ci(ambient_CO2, An, gsw):
     :return: Ci (µmol mol-1)
     :rtype: float
     """
-    Ci = ambient_CO2 - An * ((parameters.gsw_gs_CO2 / gsw) + (parameters.Ci_A / parameters.GB))  #: Intercellular concentration of CO2 (µmol mol-1)
+
+    # Integration of gsw calculated from coupling Tuzet and Leuning models
+    Ci = ambient_CO2 - An * ((parameters.gsw_gs_CO2 / gs_VPD_psi) + (parameters.Ci_A / parameters.GB))  #: Intercellular concentration of CO2 (µmol mol-1)
+
+    # Ci = ambient_CO2 - An * ((parameters.gsw_gs_CO2 / gsw) + (parameters.Ci_A / parameters.GB))  #: Intercellular concentration of CO2 (µmol mol-1)
     # gsw and GB in mol m-2 s-1 so that  (An * ((1.6/gs) + (1.37/parameters.GB)) is thus in µmol mol-1 as ambient_CO2
+
 
     return Ci
 
@@ -434,13 +467,14 @@ def run(surfacic_nitrogen, NSC_Retroinhibition, surfacic_NSC, width, height, PAR
         # Stomatal conductance to CO2
         gs_VPD = _stomatal_conductance_Leuning(total_water_potential, An, Ag, Ta, ambient_CO2, RH)
         gs_psi = _stomatal_conductance_Tuzet(total_water_potential, An, Ag, Ta, ambient_CO2)
-        gs_VPD_psi = _stomatal_conductance_Wolf(total_water_potential, An, Ag, Ta, ambient_CO2, RH)
+        # gs_VPD_psi = _stomatal_conductance_Wolf(total_water_potential, An, Ag, Ta, ambient_CO2, RH)
+        gs_VPD_psi = _stomatal_conductance_coupling(total_water_potential, An, Ag, Ta, ambient_CO2, RH)
 
         # New value of Ci
-        Ci = _calculate_Ci(ambient_CO2, An, gsw)
+        Ci = _calculate_Ci(ambient_CO2, An, gsw, gs_VPD, gs_psi, gs_VPD_psi)
 
         # New value of Ts
-        Ts, Tr, VPDa = _organ_temperature(width, height, height_canopy, Ur, PAR, gsw, Ta, Ts, RH, organ_name, SRWC)
+        Ts, Tr, VPDa = _organ_temperature(width, height, height_canopy, Ur, PAR, gsw, gs_VPD, gs_psi, gs_VPD_psi, Ta, Ts, RH, organ_name, SRWC)
         count += 1
 
         if count >= 30:  # TODO: test a faire? Semble prendre du tps de calcul

@@ -125,8 +125,8 @@ T_ref = 293.2 # Reference temperature (K). Tuzet et al. (2003).
 
 m = 5.7 # Shape parameter (-). Alabasha et al. (2019)
 # m = 2 # Shape parameter (-). Tuzet et al. (2003)
-water_potential_ref = -0.65 # Leaf water potential at which gs_CO2 is reduced by 50% og its unstressed level (Mpa) Alabasha et al. (2019)
-# water_potential_ref = -1.5 # Leaf water potential at which gs_CO2 is reduced by 50% og its unstressed level (Mpa). Jarvis (1976). Tuzet et al. (2003)
+water_potential_ref = -0.65 # Leaf water potential at which gs_CO2 is reduced by 50% of its unstressed level (Mpa) Alabasha et al. (2019)
+# water_potential_ref = -1.5 # Leaf water potential at which gs_CO2 is reduced by 50% of its unstressed level (Mpa). Jarvis (1976). Tuzet et al. (2003)
 D0 = 30 # Scaling parameter (kPa). Value 1 or 30. Alabasha et al. (2019)
 n = 4 # Shape parameter (-). Alabasha et al. (2019)
 

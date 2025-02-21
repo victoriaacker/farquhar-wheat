@@ -19,7 +19,7 @@ import pandas as pd
 FARQUHARWHEAT_ELEMENTS_INPUTS = ['width', 'height', 'PARa', 'nitrates', 'amino_acids', 'proteins', 'Nstruct', 'green_area',
                                  'sucrose', 'starch', 'fructan', 'PARa_prim', 'area_prim', 'ambient_CO2', 'total_water_potential']
 #: the inputs needed by FarquharWheat at axis scale
-FARQUHARWHEAT_AXES_INPUTS = ['SAM_temperature', 'height_canopy', 'SRWC']
+FARQUHARWHEAT_AXES_INPUTS = ['SAM_temperature', 'height_canopy']
 
 #: the outputs computed by FarquharWheat
 FARQUHARWHEAT_ELEMENTS_OUTPUTS = ['Ag', 'An', 'Rd', 'Tr', 'VPDa', 'Ts', 'gs', 'width', 'height', 'ambient_CO2', 'PARa', 'gs_VPD', 'gs_psi', 'gs_VPD_psi', 'total_water_potential']

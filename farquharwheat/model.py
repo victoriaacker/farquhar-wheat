@@ -20,7 +20,7 @@ from farquharwheat import parameters
 
 # TODO: extract all parameters and put them in farqhuar.parameters
 
-def _organ_temperature(w, z, Zh, Ur, PAR, gsw, gs_VPD, gs_psi, gs_VPD_psi, Ta, Ts, RH, organ_name, SRWC):
+def _organ_temperature(w, z, Zh, Ur, PAR, gsw, gs_VPD, gs_psi, gs_VPD_psi, Ta, Ts, RH, organ_name):
     """
     Energy balance for the estimation of organ temperature
 
@@ -422,7 +422,7 @@ def calculate_surfacic_WSC(sucrose, starch, fructan, green_area):
     return (sucrose + starch + fructan) / green_area
 
 
-def run(surfacic_nitrogen, NSC_Retroinhibition, surfacic_NSC, width, height, PAR, Ta, ambient_CO2, RH, Ur, organ_name, height_canopy, total_water_potential, SRWC):
+def run(surfacic_nitrogen, NSC_Retroinhibition, surfacic_NSC, width, height, PAR, Ta, ambient_CO2, RH, Ur, organ_name, height_canopy, total_water_potential):
     """
     Computes the photosynthesis of a photosynthetic element. The photosynthesis is computed by using the biochemical FCB model (Farquhar et al., 1980) coupled to the semiempirical
     BWB model of stomatal conductance (Ball, 1987).
@@ -474,7 +474,7 @@ def run(surfacic_nitrogen, NSC_Retroinhibition, surfacic_NSC, width, height, PAR
         Ci = _calculate_Ci(ambient_CO2, An, gsw, gs_VPD, gs_psi, gs_VPD_psi)
 
         # New value of Ts
-        Ts, Tr, VPDa = _organ_temperature(width, height, height_canopy, Ur, PAR, gsw, gs_VPD, gs_psi, gs_VPD_psi, Ta, Ts, RH, organ_name, SRWC)
+        Ts, Tr, VPDa = _organ_temperature(width, height, height_canopy, Ur, PAR, gsw, gs_VPD, gs_psi, gs_VPD_psi, Ta, Ts, RH, organ_name)
         count += 1
 
         if count >= 30:  # TODO: test a faire? Semble prendre du tps de calcul

@@ -66,7 +66,7 @@ class Simulation(object):
         self.inputs.update(inputs)
 
 
-    def run(self, Ta, ambient_CO2, RH, Ur, SRWC):
+    def run(self, Ta, ambient_CO2, RH, Ur):
         """
         Compute Farquhar variables for each element in :attr:`inputs` and put
         the results in :attr:`outputs`.
@@ -87,7 +87,6 @@ class Simulation(object):
 
             # total_water_potential = -0.1
             total_water_potential = self.inputs['elements'][element_id]['total_water_potential']
-            SRWC = self.inputs['axes'][axis_id]['SRWC']
 
             if axe_label != 'MS':  # Calculation only for the main stem
                 continue
@@ -122,7 +121,7 @@ class Simulation(object):
                                                        element_inputs['width'],
                                                        element_inputs['height'],
                                                        PARa, Ta, ambient_CO2,
-                                                       RH, Ur, organ_label, height_canopy, total_water_potential, SRWC)
+                                                       RH, Ur, organ_label, height_canopy, total_water_potential)
 
                 else:
                     #:  Computation at primitive scale
@@ -134,7 +133,7 @@ class Simulation(object):
                                                                 element_inputs['width'],
                                                                 element_inputs['height'],
                                                                 PARa_prim, Ta, ambient_CO2,
-                                                                RH, Ur, organ_label, height_canopy, total_water_potential, SRWC)
+                                                                RH, Ur, organ_label, height_canopy, total_water_potential)
                         Ag_prim_list.append(Ag_prim)
                     if not Ag_prim_list:
                         Ag = 0

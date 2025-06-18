@@ -115,8 +115,6 @@ gsw_gs_CO2 = 1.6  # conversion factor from gsw into gs_CO2
 Ci_A = 1.37  # factor in Ci calculation. Comes from (1.6)^(2/3)
 
 GSMIN = 0.05  # Minimum gsw, measured in the dark (mol m-2 s-1). Braune et al. (2009).
-# GSMIN = 0.02 # Residual conductance for CO2 (mol m-2 s-1) (limiting value of gCO2 at the light compensation point) Alabasha et al. (2019)
-# GSMIN = 0.3E-3 # Residual conductance for CO2 (mol m-2 s-1) (limiting value of gCO2 at the light compensation point). Tuzet et al. (2003)
 
 GAMMA0 = 28E-6 # Empirical parameter (mol mol-1). Tuzet et al. (2003).
 GAMMA1 = 0.0509 # Empirical parameter (-). Tuzet et al. (2003).
@@ -124,9 +122,8 @@ GAMMA2 = 0.0010 # Empirical parameter (-). Tuzet et al. (2003).
 T_ref = 293.2 # Reference temperature (K). Tuzet et al. (2003).
 
 m = 5.7 # Shape parameter (-). Alabasha et al. (2019)
-# m = 2 # Shape parameter (-). Tuzet et al. (2003)
 water_potential_ref = -0.65 # Leaf water potential at which gs_CO2 is reduced by 50% of its unstressed level (Mpa) Alabasha et al. (2019)
-D0 = 30 # Scaling parameter (kPa). Value 1 or 30. Alabasha et al. (2019)
+D0 = 30 # Scaling parameter (kPa). Alabasha et al. (2019)
 n = 4 # Shape parameter (-). Alabasha et al. (2019)
 
 # -- Temperature dependance of photosynthetic parameters (parameter values derived from Braune et al. (2009) except for Kc, Ko, and Rdark (Bernacchi et al., 2001))
@@ -162,6 +159,7 @@ class ElementDefaultProperties(object):
         self.starch = 0
         self.green_area = 0
         self.total_water_potential = -0.1
+        self.Ci = 400
 
 
 class AxisDefaultProperties(object):
@@ -169,4 +167,4 @@ class AxisDefaultProperties(object):
     Properties by default for the axis. Used in FarquharWheat facade.
     """
     def __init__(self):
-        self.height_canopy = 0.78
+        self.height_canopy = 0.78   #: m

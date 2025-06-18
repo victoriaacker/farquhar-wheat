@@ -44,7 +44,7 @@ if __name__ == '__main__':
     # initialize the simulation with the inputs
     simulation_.initialize(inputs)
     # run the simulation
-    simulation_.run(Ta=18.8, RH=0.530000, Ur=2.200000, ambient_CO2=400, SRWC=80)
+    simulation_.run(Ta=18.8, RH=0.530000, Ur=2.200000, ambient_CO2=400)
     # convert the outputs to Pandas dataframe
     outputs_df = converter.to_dataframe(simulation_.outputs)
     # write the dataframe to CSV

@@ -119,7 +119,7 @@ def _stomatal_conductance(Ag, An, surfacic_nitrogen, ambient_CO2, RH):
 
 def _stomatal_conductance_Leuning(An, Ag, Ta, ambient_CO2, RH):
     """
-    Tuzet model of stomatal conductance to CO2 (2003)
+    Leuning model of stomatal conductance to water (1995)
 
     :param float Ag: gross assimilation rate (µmol m-2 s-1)
     :param float An: net assimilation rate (µmol m-2 s-1)
@@ -144,7 +144,7 @@ def _stomatal_conductance_Leuning(An, Ag, Ta, ambient_CO2, RH):
 
 def _stomatal_conductance_Tuzet(total_water_potential, An, Ag, Ta, ambient_CO2):
     """
-    Tuzet model of stomatal conductance to CO2 (2003)
+    Tuzet model of stomatal conductance to water (2003)
 
     :param total_water_potential: water potential of the organ (Mpa)
     :param float Ag: gross assimilation rate (µmol m-2 s-1)
@@ -165,7 +165,7 @@ def _stomatal_conductance_Tuzet(total_water_potential, An, Ag, Ta, ambient_CO2):
 
 def _stomatal_conductance_coupling(total_water_potential, An, Ag, Ta, ambient_CO2, RH):
     """
-    Model of stomatal conductance to CO2 coupling Tuzet and Leuning
+    Model of stomatal conductance to water coupling Tuzet and Leuning
 
     :param total_water_potential: water potential of the organ (Mpa)
     :param float Ag: gross assimilation rate (µmol m-2 s-1)
@@ -430,7 +430,6 @@ def run(surfacic_nitrogen, NSC_Retroinhibition, surfacic_NSC, width, height, PAR
         surfacic_nitrogen = parameters.NA_0
 
     # Iterations to find organ temperature and Ci #
-    # Ci, Ts = parameters.Ci_init_ratio * ambient_CO2, Ta  # Initial values
     Ts = Ta  # Initial values
     Ci = Ci # Previous values
 

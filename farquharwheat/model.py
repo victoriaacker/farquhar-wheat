@@ -65,7 +65,6 @@ def _organ_temperature(w, z, Zh, Ur, PAR, gs_VPD_psi, Ta, Ts, RH, organ_name):
     es_Ta = parameters.s_C * exp((parameters.s_B * Ta) / (parameters.s_A + Ta))  #: Saturated vapour pressure of the air (kPa), Ta in degree Celsius
     V = RH * es_Ta  #: Vapour pressure of the air (kPa)
     # fvap = 0.56 - 0.079*sqrt(10*V)                      #: Fraction of vapour pressure
-    #
     # tau = RGa/parameters.I0                                    #: Atmospheric transmissivity (dimensionless)
     # fclear = 0.1 + 0.9*max(0, min(1, (tau-0.2)/0.5))    #: Fraction sky clearness
 
